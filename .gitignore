@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+.vercel/
+artifacts/
+data/Fake.csv
+data/True.csv
+
+.vercel

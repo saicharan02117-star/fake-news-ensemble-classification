@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Python machine-learning project for fake news detection using TF-IDF and ensemble text classification.">
+  <title>VeriNews AI | Ensemble Fake News Detection</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="VeriNews AI home">
+      <span class="brand-mark" aria-hidden="true">VN</span>
+      <span><strong>VeriNews AI</strong><small>Ensemble Text Intelligence</small></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#analyzer">Analyzer</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#models">Models</a>
+      <a href="#evaluation">Evaluation</a>
+    </nav>
+    <a class="nav-cta" href="#analyzer">Test an article</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="live-dot"></span> Machine Learning Laboratory Project</span>
+        <h1>Fake News Detection Using <span>Ensemble Text Classification</span></h1>
+        <p class="hero-lead">A Python and scikit-learn system that converts news text into TF-IDF features, compares three classifiers and returns one transparent majority-vote result.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#analyzer">Analyze news text</a>
+          <a class="button secondary" href="#workflow">Explore the pipeline</a>
+        </div>
+        <div class="hero-metrics" aria-label="Project highlights">
+          <div><strong>3</strong><span>ML classifiers</span></div>
+          <div><strong>TF-IDF</strong><span>Text features</span></div>
+          <div><strong>Hard vote</strong><span>Final decision</span></div>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Illustration of the voting ensemble">
+        <div class="scan-ring ring-one"></div>
+        <div class="scan-ring ring-two"></div>
+        <div class="news-card card-a"><span>LR</span><b>REAL</b></div>
+        <div class="news-card card-b"><span>KNN</span><b>FAKE</b></div>
+        <div class="news-card card-c"><span>DT</span><b>REAL</b></div>
+        <div class="brain-core">
+          <svg viewBox="0 0 84 84" role="img" aria-label="Document analysis icon">
+            <rect x="20" y="13" width="44" height="58" rx="7"></rect>
+            <path d="M30 29h24M30 40h24M30 51h15"></path>
+            <circle cx="55" cy="56" r="8"></circle>
+            <path d="m61 62 7 7"></path>
+          </svg>
+          <span>ENSEMBLE</span>
+        </div>
+        <div class="verdict-pill"><i></i> Majority prediction</div>
+      </div>
+    </section>
+
+    <section class="analyzer-section" id="analyzer">
+      <div class="section-heading">
+        <span class="eyebrow">Interactive demonstration</span>
+        <h2>Analyze a news article</h2>
+        <p>Paste a headline with its article text. The Python backend cleans the text, creates TF-IDF features and collects the three model votes.</p>
+      </div>
+
+      <div class="analyzer-grid">
+        <form class="input-panel" id="analysisForm">
+          <div class="panel-heading">
+            <div><span class="step-number">01</span><h3>News input</h3></div>
+            <span id="charCount">0 / 20,000</span>
+          </div>
+          <label for="newsText">Headline and article text</label>
+          <textarea id="newsText" maxlength="20000" placeholder="Paste the news article here..." required></textarea>
+          <div class="example-row">
+            <span>Quick examples</span>
+            <button type="button" class="example-button" data-example="real">Verified-style report</button>
+            <button type="button" class="example-button" data-example="fake">Suspicious viral claim</button>
+          </div>
+          <button class="analyze-button" type="submit" id="analyzeButton">
+            <span>Run ensemble analysis</span><b aria-hidden="true">→</b>
+          </button>
+          <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
+        </form>
+
+        <div class="result-panel empty" id="resultPanel" aria-live="polite">
+          <div class="empty-state" id="emptyState">
+            <div class="empty-icon">?</div>
+            <h3>Your structured result appears here</h3>
+            <p>Run an analysis to view the final label, model agreement, individual votes, text statistics and language signals.</p>
+          </div>
+          <div class="result-content" id="resultContent" hidden>
+            <div class="result-topline">
+              <div><span class="step-number">02</span><span>Ensemble result</span></div>
+              <span class="model-badge">TF-IDF + Hard Voting</span>
+            </div>
+            <div class="verdict-layout">
+              <div class="verdict-copy">
+                <span class="verdict-label">Prediction</span>
+                <h3 id="verdictText">REAL</h3>
+                <p id="verdictExplanation"></p>
+              </div>
+              <div class="agreement-chart" id="agreementChart"><strong id="agreementValue">0%</strong><span>model<br>agreement</span></div>
+            </div>
+            <div class="vote-grid" id="voteGrid"></div>
+            <div class="result-details">
+              <div>
+                <h4>Text profile</h4>
+                <div class="stat-grid" id="statGrid"></div>
+              </div>
+              <div>
+                <h4>Detected language signals</h4>
+                <div class="signal-list" id="signalList"></div>
+              </div>
+            </div>
+            <p class="disclaimer" id="disclaimer"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="workflow-section" id="workflow">
+      <div class="section-heading split-heading">
+        <div><span class="eyebrow">System design</span><h2>From raw article to final decision</h2></div>
+        <p>The implementation follows the same ordered pipeline shown in the project presentation.</p>
+      </div>
+      <ol class="workflow">
+        <li><span>01</span><div class="workflow-icon">▤</div><h3>Dataset</h3><p>Combine labelled fake and real articles.</p></li>
+        <li><span>02</span><div class="workflow-icon">✦</div><h3>Preprocessing</h3><p>Normalize case and remove unwanted characters.</p></li>
+        <li><span>03</span><div class="workflow-icon">#</div><h3>TF-IDF</h3><p>Convert cleaned text into weighted numerical vectors.</p></li>
+        <li><span>04</span><div class="workflow-icon">80</div><h3>Train and test</h3><p>Use an 80 percent training and 20 percent testing split.</p></li>
+        <li><span>05</span><div class="workflow-icon">3×</div><h3>ML models</h3><p>Generate independent classifications from three algorithms.</p></li>
+        <li><span>06</span><div class="workflow-icon">✓</div><h3>Voting</h3><p>Select the class supported by at least two models.</p></li>
+      </ol>
+    </section>
+
+    <section class="models-section" id="models">
+      <div class="section-heading">
+        <span class="eyebrow">Classifiers</span>
+        <h2>Three models, one explainable vote</h2>
+        <p>Each model views the same TF-IDF feature matrix but reaches its prediction through a different decision method.</p>
+      </div>
+      <div class="model-grid">
+        <article class="model-card teal-card">
+          <div class="model-number">01</div><div class="model-icon">LR</div>
+          <h3>Logistic Regression</h3>
+          <p>Estimates a linear decision boundary between fake and real text using weighted terms and phrases.</p>
+          <ul><li>Supervised classification</li><li>Strong text baseline</li><li>Efficient on sparse features</li></ul>
+        </article>
+        <article class="model-card amber-card">
+          <div class="model-number">02</div><div class="model-icon">K</div>
+          <h3>K-Nearest Neighbors</h3>
+          <p>Compares the article vector with nearby labelled examples using cosine distance.</p>
+          <ul><li>Similarity-based decision</li><li>No parametric boundary</li><li>Distance-weighted neighbors</li></ul>
+        </article>
+        <article class="model-card red-card">
+          <div class="model-number">03</div><div class="model-icon">DT</div>
+          <h3>Decision Tree</h3>
+          <p>Splits feature values through readable decision rules until it reaches a class prediction.</p>
+          <ul><li>Rule-based partitions</li><li>Captures nonlinear patterns</li><li>Controlled tree depth</li></ul>
+        </article>
+      </div>
+      <div class="voting-strip">
+        <div><span>LR</span><span>KNN</span><span>DT</span></div>
+        <strong>Majority voting ensemble</strong>
+        <div><span class="real-dot"></span>REAL</div>
+      </div>
+    </section>
+
+    <section class="evaluation-section" id="evaluation">
+      <div class="evaluation-copy">
+        <span class="eyebrow">Evaluation</span>
+        <h2>Metrics that show more than accuracy</h2>
+        <p>The training script reports accuracy for every classifier and for the final ensemble. It also produces precision, recall, F1-score and a confusion matrix for the FAKE and REAL classes.</p>
+        <div class="metric-list">
+          <div><strong>Accuracy</strong><span>Overall correct predictions</span></div>
+          <div><strong>Precision</strong><span>Reliability of a predicted class</span></div>
+          <div><strong>Recall</strong><span>Coverage of actual class examples</span></div>
+          <div><strong>F1-score</strong><span>Balance of precision and recall</span></div>
+        </div>
+      </div>
+      <div class="matrix-card">
+        <div class="matrix-head"><span>Confusion matrix structure</span><b>TEST SET</b></div>
+        <div class="matrix-axis top-axis"><span>Predicted FAKE</span><span>Predicted REAL</span></div>
+        <div class="matrix-body">
+          <div class="side-axis"><span>Actual FAKE</span><span>Actual REAL</span></div>
+          <div class="matrix-grid"><div class="good">True<br>Fake</div><div class="bad">False<br>Real</div><div class="bad">False<br>Fake</div><div class="good">True<br>Real</div></div>
+        </div>
+        <p>Fit TF-IDF only on training data. Transform the test set with the same fitted vectorizer to prevent data leakage.</p>
+      </div>
+    </section>
+
+    <section class="scope-section">
+      <article><span class="scope-icon good-icon">✓</span><h3>Advantages</h3><p>Automatic text classification, multiple independent models and a clear final vote.</p></article>
+      <article><span class="scope-icon warn-icon">!</span><h3>Limitations</h3><p>The output depends on training data and language patterns. It does not verify a claim against external evidence.</p></article>
+      <article><span class="scope-icon future-icon">↗</span><h3>Future scope</h3><p>Updated datasets, transformer models, multilingual detection and source-credibility analysis.</p></article>
+    </section>
+  </main>
+
+  <footer>
+    <div><span class="brand-mark">VN</span><div><strong>VeriNews AI</strong><p>Fake News Detection Using Ensemble Text Classification</p></div></div>
+    <p>Python • TF-IDF • Logistic Regression • KNN • Decision Tree • Voting Ensemble</p>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
+

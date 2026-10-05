@@ -1,2 +1,11 @@
+[project]
+name = "fake-news-ensemble-classification"
+version = "1.0.0"
+description = "Fake news detection using TF-IDF and hard-voting text classifiers"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "scikit-learn==1.8.0",
+]
+
 [tool.vercel]
 entrypoint = "api.analyze:handler"

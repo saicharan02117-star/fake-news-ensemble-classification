@@ -32,8 +32,11 @@ class handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
-        cache_control = "no-cache" if relative_path == "index.html" else "public, max-age=3600"
+        cache_control = "no-cache, must-revalidate" if relative_path == "index.html" else "no-store, max-age=0"
         self.send_header("Cache-Control", cache_control)
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+        self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
         if include_body:
             self.wfile.write(body)
